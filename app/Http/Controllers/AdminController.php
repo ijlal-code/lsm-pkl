@@ -2,35 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Perusahaan;
+use App\Models\Pengaturan;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function indexSiswa()
+    public function dashboard()
     {
-        // Ambil semua data sesuai role masing-masing
-        $siswas = User::where('role', 'siswa_pkl')->get();
-        $gurus = User::where('role', 'guru_pembimbing')->get();
-        $instrukturs = User::where('role', 'instruktur_industri')->get();
-        $perusahaans = Perusahaan::all();
+        // Mengambil rekap data untuk Dashboard Monitoring
+        $countSiswa = User::where('role', 'siswa')->count();
+        $countGuru = User::where('role', 'guru')->count();
+        $countInstruktur = User::where('role', 'instruktur')->count();
 
-        return view('admin.siswa.index', compact('siswas', 'gurus', 'instrukturs', 'perusahaans'));
+        return view('admin.dashboard', compact('countSiswa', 'countGuru', 'countInstruktur'));
     }
 
-    public function updateMapping(Request $request, $id)
-    {
-        $siswa = User::findOrFail($id);
-        
-        $siswa->update([
-            'kelas' => $request->kelas,
-            'jurusan' => $request->jurusan,
-            'perusahaan_id' => $request->perusahaan_id,
-            'instruktur_id' => $request->instruktur_id,
-            'guru_id' => $request->guru_id,
-        ]);
 
-        return redirect()->back()->with('success', 'Data Pemetaan Siswa berhasil disimpan!');
-    }
+public function siswaIndex()
+{
+    $siswas = User::where('role', 'siswa')->latest()->get();
+    $gurus = User::where('role', 'guru')->get();
+    $perusahaans = \App\Models\Perusahaan::all();
+    return view('admin.siswa.index', compact('siswas', 'gurus', 'perusahaans'));
+}
+
+public function guruIndex()
+{
+    $gurus = User::where('role', 'guru')->latest()->get();
+    return view('admin.guru.index', compact('gurus'));
+}
+
+public function instrukturIndex()
+{
+    $instrukturs = User::where('role', 'instruktur')->latest()->get();
+    return view('admin.instruktur.index', compact('instrukturs'));
+}
+
+public function pengaturanIndex()
+{
+    $pengaturan = Pengaturan::first();
+    return view('admin.pengaturan.index', compact('pengaturan'));
+}
 }
