@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CetakPdfController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\InstrukturController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,15 +72,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/jurnal/{id}', [JurnalSiswaController::class, 'destroy'])->name('jurnal.destroy');
     });
 
-    // ==========================================
+   // ==========================================
     // 4. JALUR AKSES: INSTRUKTUR INDUSTRI
     // ==========================================
     Route::middleware(['role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
         Route::get('/dashboard', function () {
-            return '<h1>Halaman Dashboard Instruktur Industri</h1>';
+            // Arahkan dashboard instruktur langsung ke halaman validasi jurnal
+            return redirect()->route('instruktur.jurnal.index');
         })->name('dashboard');
 
-        // Tempat naruh Route instruktur menyetujui jurnal dan isi absen
+        // Route Validasi Jurnal
+        Route::get('/jurnal', [\App\Http\Controllers\InstrukturController::class, 'jurnalIndex'])->name('jurnal.index');
+        Route::put('/jurnal/{id}/update', [\App\Http\Controllers\InstrukturController::class, 'jurnalUpdate'])->name('jurnal.update');
+        
+        // Route Absensi Siswa
+        Route::get('/absensi', [\App\Http\Controllers\InstrukturController::class, 'absensiIndex'])->name('absensi.index');
+        Route::post('/absensi', [\App\Http\Controllers\InstrukturController::class, 'absensiStore'])->name('absensi.store');
     });
 
 });
