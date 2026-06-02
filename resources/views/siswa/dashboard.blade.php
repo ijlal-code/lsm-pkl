@@ -29,6 +29,11 @@
                         <h5 class="text-xl font-bold tracking-tight text-gray-900">📁 Dokumen & Penilaian Akhir</h5>
                         <p class="font-normal text-gray-600 mt-2">Unggah laporan akhir PKL Anda dan lihat rekap nilai dari industri.</p>
                     </a>
+                    <!-- Card Catatan Kegiatan -->
+<a href="{{ route('siswa.catatan.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Catatan Kegiatan</h5>
+    <p class="font-normal text-gray-700">Isi refleksi, perencanaan, dan pelaksanaan kegiatan harian.</p>
+</a>
                 </div>
             </div>
         </div>

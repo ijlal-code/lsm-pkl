@@ -19,6 +19,11 @@
                         <h5 class="text-2xl font-bold tracking-tight text-gray-900 mb-2">📊 Ruang Monitoring & Daftar Siswa</h5>
                         <p class="font-normal text-gray-600">Klik di sini untuk melihat daftar siswa, membaca aktivitas jurnal mereka, mengecek riwayat absensi industri, serta menginput Lembar Observasi Kunjungan.</p>
                     </a>
+                    <!-- Card Catatan Kegiatan Siswa -->
+<a href="{{ route('guru.catatan.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Catatan Kegiatan Siswa</h5>
+    <p class="font-normal text-gray-700">Pantau refleksi dan catatan kegiatan yang ditulis oleh siswa bimbingan.</p>
+</a>
                 </div>
             </div>
         </div>

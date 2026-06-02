@@ -47,4 +47,28 @@ class CetakPdfController extends Controller
                   ->setPaper('a4', 'portrait');
         return $pdf->stream('Nilai_PKL_'.$siswa->name.'.pdf');
     }
+
+    public function cetakCatatan()
+    {
+        $user = auth()->user();
+        
+        // Ambil data catatan siswa yang sudah di-approve
+        $catatan = \App\Models\CatatanKegiatan::where('user_id', $user->id)
+                    ->where('is_approved', true)
+                    ->get();
+                    
+        $data = [
+            'nama_siswa' => $user->name,
+            'dunia_kerja' => $user->perusahaan->nama ?? 'Belum Diatur', 
+            'nama_instruktur' => $user->instruktur->name ?? 'Belum Diatur', 
+            'nama_guru' => $user->guru->name ?? 'Belum Diatur', 
+            'catatan' => $catatan
+        ];
+
+        // Pastikan Anda sudah menginstall barryvdh/laravel-dompdf
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.catatan', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Catatan_Kegiatan_PKL_'.$user->name.'.pdf');
+    }
 }

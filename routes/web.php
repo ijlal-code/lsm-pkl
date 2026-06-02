@@ -9,6 +9,7 @@ use App\Http\Controllers\JurnalSiswaController;
 use App\Http\Controllers\DokumenSiswaController;
 use App\Http\Controllers\InstrukturController;
 use App\Http\Controllers\CetakPdfController;
+use App\Http\Controllers\CatatanSiswaController;
 
 // Import Model untuk kebutuhan statistik di Dashboard
 use App\Models\User;
@@ -116,6 +117,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/nilai', [InstrukturController::class, 'nilaiIndex'])->name('nilai.index');
         Route::post('/nilai', [InstrukturController::class, 'nilaiStore'])->name('nilai.store');
     });
+
+    // Rute untuk Siswa
+Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
+    Route::resource('catatan', App\Http\Controllers\CatatanSiswaController::class)->only(['index', 'create', 'store']);
+    Route::get('/cetak-catatan', [App\Http\Controllers\CetakPdfController::class, 'cetakCatatan'])->name('cetak.catatan');
+});
+
+// Rute untuk Guru Pembimbing (Hanya Lihat)
+Route::middleware(['auth', 'role:guru_pembingbing'])->prefix('guru')->name('guru.')->group(function () {
+    Route::get('/catatan', [App\Http\Controllers\CatatanGuruController::class, 'index'])->name('catatan.index');
+});
+
+// Rute untuk Instruktur Industri (Lihat & Persetujuan)
+Route::middleware(['auth', 'role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
+    Route::get('/catatan', [App\Http\Controllers\CatatanInstrukturController::class, 'index'])->name('catatan.index');
+    Route::put('/catatan/{id}/approve', [App\Http\Controllers\CatatanInstrukturController::class, 'approve'])->name('catatan.approve');
+});
 });
 
 require __DIR__.'/auth.php';
