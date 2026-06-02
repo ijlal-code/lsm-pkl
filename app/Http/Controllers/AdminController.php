@@ -13,12 +13,12 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $countSiswa = User::where('role', 'siswa')->count();
-        $countGuru = User::where('role', 'guru')->count();
-        $countInstruktur = User::where('role', 'instruktur')->count();
-        $countIndustri = Perusahaan::count();
+        $jumlahSiswa = User::where('role', 'siswa')->count();
+        $jumlahGuru = User::where('role', 'guru')->count();
+        $jumlahInstruktur = User::where('role', 'instruktur')->count();
+        $jumlahIndustri = Perusahaan::count();
 
-        return view('admin.dashboard', compact('countSiswa', 'countGuru', 'countInstruktur', 'countIndustri'));
+        return view('admin.dashboard', compact('jumlahSiswa', 'jumlahGuru', 'jumlahInstruktur', 'jumlahIndustri'));
     }
 
     // ==========================================

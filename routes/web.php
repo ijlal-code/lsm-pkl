@@ -87,25 +87,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('/siswa/{id}/observasi', [GuruController::class, 'observasiStore'])->name('observasi.store');
     });
 
-    // ==========================================
-    // 3. SISWA
-    // ==========================================
-    Route::middleware(['role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
-        Route::get('/dashboard', function () {
-            // Ambil data statistik untuk Siswa
-            $jumlahJurnal = Jurnal::where('siswa_id', Auth::id())->count();
-            $jurnalDisetujui = Jurnal::where('siswa_id', Auth::id())->where('status_persetujuan', 'disetujui')->count();
-            return view('siswa.dashboard', compact('jumlahJurnal', 'jurnalDisetujui'));
-        })->name('dashboard');
-
-        Route::get('/jurnal', [JurnalSiswaController::class, 'index'])->name('jurnal.index');
-        Route::get('/jurnal/tambah', [JurnalSiswaController::class, 'create'])->name('jurnal.create');
-        Route::post('/jurnal', [JurnalSiswaController::class, 'store'])->name('jurnal.store');
-        Route::delete('/jurnal/{id}', [JurnalSiswaController::class, 'destroy'])->name('jurnal.destroy');
-        
-        Route::get('/dokumen', [DokumenSiswaController::class, 'index'])->name('dokumen.index');
-        Route::post('/dokumen', [DokumenSiswaController::class, 'store'])->name('dokumen.store');
-    });
+   // Group Rute Khusus Siswa PKL
+Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+    
+    // Dashboard Siswa
+    Route::get('/dashboard', [JurnalSiswaController::class, 'dashboard'])->name('dashboard');
+    
+    // CRUD Jurnal & Catatan Kegiatan
+    Route::get('/jurnal', [JurnalSiswaController::class, 'index'])->name('jurnal.index');
+    Route::get('/jurnal/create', [JurnalSiswaController::class, 'create'])->name('jurnal.create');
+    Route::post('/jurnal', [JurnalSiswaController::class, 'store'])->name('jurnal.store');
+    
+    // Melihat Absensi (Hanya View/Read)
+    Route::get('/absensi', [JurnalSiswaController::class, 'absensi'])->name('absensi.index');
+});
 
     // ==========================================
     // 4. INSTRUKTUR

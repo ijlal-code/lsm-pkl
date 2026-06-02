@@ -24,7 +24,7 @@
                     </div>
                     <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
                         <p class="text-xs text-orange-600 font-bold uppercase">Tempat Industri / DUDI</p>
-                        <h4 class="text-4xl font-bold text-orange-800">{{ $jumlahPerusahaan }}</h4>
+                        <h4 class="text-4xl font-bold text-orange-800">{{ $jumlahIndustri }}</h4>
                     </div>
                 </div>
 

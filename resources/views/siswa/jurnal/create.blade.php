@@ -1,47 +1,59 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Tambah Jurnal Harian') }}
+            {{ __('Isi Jurnal & Catatan Kegiatan Harian') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                
-                <form action="{{ route('siswa.jurnal.store') }}" method="POST" enctype="multipart/form-data">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="p-6 bg-white shadow sm:rounded-lg">
+                <form method="POST" action="{{ route('siswa.jurnal.store') }}" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Hari / Tanggal Kegiatan</label>
-                        <input type="date" name="hari_tanggal" value="{{ date('Y-m-d') }}" class="w-full border-gray-300 rounded shadow-sm" required>
-                        @error('hari_tanggal') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                        <p class="text-sm font-bold text-blue-800">Bagian 1: Data Jurnal Kegiatan Utama</p>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Unit Kerja / Pekerjaan</label>
-                        <input type="text" name="unit_kerja" placeholder="Contoh: Divisi Jaringan / Pemasangan Kabel LAN" class="w-full border-gray-300 rounded shadow-sm" required>
-                        @error('unit_kerja') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label value="Hari / Tanggal Kegiatan" />
+                            <x-text-input name="tanggal" type="date" class="mt-1 block w-full" required />
+                        </div>
+                        <div>
+                            <x-input-label value="Unit Kerja / Divisi Pekerjaan" />
+                            <x-text-input name="unit_kerja" type="text" class="mt-1 block w-full" placeholder="Contoh: Divisi IT Support" required />
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Deskripsi Pekerjaan</label>
-                        <textarea name="deskripsi_pekerjaan" rows="4" placeholder="Ceritakan apa saja yang kamu kerjakan hari ini..." class="w-full border-gray-300 rounded shadow-sm" required></textarea>
-                        @error('deskripsi_pekerjaan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-6 mb-4">
+                        <p class="text-sm font-bold text-blue-800">Bagian 2: Detail Catatan Pekerjaan</p>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Dokumentasi (Foto) <span class="text-gray-400 font-normal text-sm">- Opsional</span></label>
-                        <input type="file" name="dokumentasi" accept="image/*" class="w-full border-gray-300 rounded shadow-sm p-1 border">
-                        @error('dokumentasi') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <div>
+                        <x-input-label value="Nama Pekerjaan (Topik Utama)" />
+                        <x-text-input name="nama_pekerjaan" type="text" class="mt-1 block w-full" required />
                     </div>
 
-                    <div class="flex justify-end mt-6">
-                        <a href="{{ route('siswa.jurnal.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">Batal</a>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">Simpan Jurnal</button>
+                    <div>
+                        <x-input-label value="Perencanaan Kegiatan (Jadwal/Target)" />
+                        <textarea name="perencanaan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" rows="3" required></textarea>
+                    </div>
+
+                    <div>
+                        <x-input-label value="Pelaksanaan Kegiatan / Hasil Kerja" />
+                        <textarea name="pelaksanaan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" rows="4" required></textarea>
+                    </div>
+
+                    <div>
+                        <x-input-label value="Upload Dokumentasi (Opsional - Foto Kegiatan)" />
+                        <input type="file" name="dokumentasi" accept="image/*" class="mt-1 block w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <x-primary-button>Kirim Jurnal Harian</x-primary-button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
