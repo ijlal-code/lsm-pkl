@@ -71,21 +71,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/pengaturan', [AdminController::class, 'pengaturanUpdate'])->name('pengaturan.update');
 });
 
-    // ==========================================
-    // 2. GURU PEMBIMBING
-    // ==========================================
-    Route::middleware(['role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
-        Route::get('/dashboard', function () {
-            // Ambil data statistik untuk Guru
-            $siswaBimbingan = User::where('role', 'siswa_pkl')->where('guru_id', Auth::id())->count();
-            return view('guru.dashboard', compact('siswaBimbingan'));
-        })->name('dashboard');
-
-        Route::get('/siswa', [GuruController::class, 'index'])->name('siswa.index');
-        Route::get('/siswa/{id}/detail', [GuruController::class, 'detailSiswa'])->name('siswa.detail');
-        Route::get('/siswa/{id}/observasi', [GuruController::class, 'observasiIndex'])->name('observasi.index');
-        Route::post('/siswa/{id}/observasi', [GuruController::class, 'observasiStore'])->name('observasi.store');
-    });
+   // Group Rute Khusus Guru Pembimbing
+Route::middleware(['auth', 'role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
+    
+    // Dashboard Guru
+    Route::get('/dashboard', [GuruController::class, 'dashboard'])->name('dashboard');
+    
+    // 1 & 4. Manajemen Siswa Bimbingan (Melihat Jurnal & Absensi)
+    Route::get('/siswa', [GuruController::class, 'siswaIndex'])->name('siswa.index');
+    Route::get('/siswa/{id}', [GuruController::class, 'siswaDetail'])->name('siswa.detail');
+    
+    // 2. Memberikan Catatan / Feedback Jurnal
+    Route::put('/jurnal/{id}/feedback', [GuruController::class, 'jurnalFeedback'])->name('jurnal.feedback');
+    
+    // 3. Mengisi Lembar Observasi PKL
+    Route::get('/observasi', [GuruController::class, 'observasiIndex'])->name('observasi.index');
+    Route::post('/observasi/{siswa_id}', [GuruController::class, 'observasiStore'])->name('observasi.store');
+});
 
    // Group Rute Khusus Siswa PKL
 Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {

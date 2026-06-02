@@ -1,50 +1,39 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Daftar Siswa Bimbingan') }}
+            {{ __('Daftar Siswa Bimbingan PKL') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                
-                <h3 class="text-lg font-bold mb-4">Siswa PKL Anda</h3>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse border border-gray-200">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="border p-3">Nama Siswa</th>
-                                <th class="border p-3">Kelas & Jurusan</th>
-                                <th class="border p-3">Tempat Industri</th>
-                                <th class="border p-3 text-center">Aksi Monitoring</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($siswas as $siswa)
-                            <tr class="hover:bg-gray-50">
-                                <td class="border p-3 font-bold">{{ $siswa->name }}</td>
-                                <td class="border p-3">{{ $siswa->kelas }} - {{ $siswa->jurusan }}</td>
-                                <td class="border p-3">{{ $siswa->perusahaan->nama_perusahaan ?? 'Belum Di-mapping' }}</td>
-                                <td class="border p-3 flex flex-wrap justify-center gap-2">
-                                    <a href="{{ route('guru.siswa.detail', $siswa->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white text-xs py-1 px-3 rounded shadow">
-                                        Lihat Jurnal & Absensi
-                                    </a>
-                                    <a href="{{ route('guru.observasi.index', $siswa->id) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white text-xs py-1 px-3 rounded shadow">
-                                        Lembar Observasi
-                                    </a>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="border p-4 text-center text-gray-500">Anda belum memiliki siswa bimbingan. Hubungi Admin.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
+            <div class="bg-white shadow sm:rounded-lg p-6 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nama Siswa</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Tempat Industri</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Aksi Monitoring</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        @forelse($siswas as $siswa)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ $siswa->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $siswa->email }}</td>
+                            <td class="px-6 py-4 text-sm text-orange-600 font-medium">{{ $siswa->perusahaan->nama_perusahaan ?? 'Belum Di-plotting' }}</td>
+                            <td class="px-6 py-4 text-sm">
+                                <a href="{{ route('guru.siswa.detail', $siswa->id) }}" class="text-blue-600 hover:underline font-bold">Lihat Detail & Jurnal ➔</a>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-6 text-center text-gray-500">Belum ada siswa yang di-plotting kepada Anda.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

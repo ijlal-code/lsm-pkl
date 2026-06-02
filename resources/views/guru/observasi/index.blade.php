@@ -1,72 +1,78 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Lembar Observasi: ') . $siswa->name }}
+            {{ __('Lembar Observasi PKL Siswa') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold mb-4">Input Observasi Baru</h3>
-                
-                @if(session('success'))
-                    <div class="bg-green-100 text-green-700 p-3 rounded mb-4">{{ session('success') }}</div>
-                @endif
+            @if(session('success'))
+                <div class="bg-green-100 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                <form action="{{ route('guru.observasi.store', $siswa->id) }}" method="POST">
-                    @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block font-bold mb-1">Tanggal Kunjungan/Observasi</label>
-                            <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full border-gray-300 rounded" required>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block font-bold mb-1">Permasalahan yang dialami</label>
-                            <textarea name="permasalahan" rows="3" class="w-full border-gray-300 rounded" placeholder="Kondisi siswa, iduka, atau kompetensi..." required></textarea>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block font-bold mb-1">Solusi / Pemecahan Masalah</label>
-                            <textarea name="solusi" rows="3" class="w-full border-gray-300 rounded" required></textarea>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-6 rounded">Kirim Observasi</button>
-                    </div>
-                </form>
-            </div>
+            <div class="bg-white shadow sm:rounded-lg p-6">
+                <div class="mb-4 text-sm text-gray-600 border-l-4 border-indigo-500 pl-3">
+                    <p><strong>Informasi:</strong> Lembar observasi ini diisi oleh Guru Pembimbing saat melakukan kunjungan lapangan atau evaluasi bulanan terhadap siswa di tempat PKL.</p>
+                </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold mb-4">Riwayat Observasi</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse border border-gray-200">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="border p-2">Tanggal</th>
-                                <th class="border p-2 w-1/3">Permasalahan</th>
-                                <th class="border p-2 w-1/3">Solusi</th>
-                                <th class="border p-2">Status Instruktur</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($observasis as $obs)
-                            <tr class="text-sm">
-                                <td class="border p-2">{{ \Carbon\Carbon::parse($obs->tanggal)->format('d M Y') }}</td>
-                                <td class="border p-2">{{ $obs->permasalahan }}</td>
-                                <td class="border p-2">{{ $obs->solusi }}</td>
-                                <td class="border p-2">
-                                    <span class="font-bold uppercase">{{ $obs->status_persetujuan }}</span>
-                                    @if($obs->catatan_instruktur)
-                                        <p class="text-gray-500 mt-1 italic">"{{ $obs->catatan_instruktur }}"</p>
-                                    @endif
-                                </td>
-                            </tr>
-                            @empty
-                            <tr><td colspan="4" class="border p-2 text-center">Belum ada data observasi.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <div class="space-y-8 mt-6">
+                    @forelse($siswas as $siswa)
+                    @php $obs = $observasis[$siswa->id] ?? null; @endphp
+                    <div class="border rounded-md p-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900">{{ $siswa->name }}</h4>
+                                <span class="text-sm text-orange-600 font-medium">{{ $siswa->perusahaan->nama_perusahaan ?? 'Belum ada industri' }}</span>
+                            </div>
+                            @if($obs)
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">Sudah Diobservasi</span>
+                            @else
+                                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-bold">Belum Diobservasi</span>
+                            @endif
+                        </div>
+
+                        <form method="POST" action="{{ route('guru.observasi.store', $siswa->id) }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @csrf
+                            <div>
+                                <x-input-label value="Tanggal Observasi / Kunjungan" />
+                                <x-text-input name="tanggal_observasi" type="date" value="{{ $obs->tanggal ?? \Carbon\Carbon::now()->format('Y-m-d') }}" class="mt-1 block w-full" required />
+                            </div>
+                            <div>
+                                <x-input-label value="Penilaian Aspek Sikap (A/B/C/D)" />
+                                <select name="nilai_sikap" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                    <option value="">-- Pilih Nilai --</option>
+                                    <option value="Sangat Baik (A)" {{ ($obs->aspek_sikap ?? '') == 'Sangat Baik (A)' ? 'selected' : '' }}>Sangat Baik (A)</option>
+                                    <option value="Baik (B)" {{ ($obs->aspek_sikap ?? '') == 'Baik (B)' ? 'selected' : '' }}>Baik (B)</option>
+                                    <option value="Cukup (C)" {{ ($obs->aspek_sikap ?? '') == 'Cukup (C)' ? 'selected' : '' }}>Cukup (C)</option>
+                                    <option value="Kurang (D)" {{ ($obs->aspek_sikap ?? '') == 'Kurang (D)' ? 'selected' : '' }}>Kurang (D)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <x-input-label value="Penilaian Aspek Keterampilan Kerja" />
+                                <select name="nilai_keterampilan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                    <option value="">-- Pilih Nilai --</option>
+                                    <option value="Sangat Baik (A)" {{ ($obs->aspek_keterampilan ?? '') == 'Sangat Baik (A)' ? 'selected' : '' }}>Sangat Baik (A)</option>
+                                    <option value="Baik (B)" {{ ($obs->aspek_keterampilan ?? '') == 'Baik (B)' ? 'selected' : '' }}>Baik (B)</option>
+                                    <option value="Cukup (C)" {{ ($obs->aspek_keterampilan ?? '') == 'Cukup (C)' ? 'selected' : '' }}>Cukup (C)</option>
+                                    <option value="Kurang (D)" {{ ($obs->aspek_keterampilan ?? '') == 'Kurang (D)' ? 'selected' : '' }}>Kurang (D)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <x-input-label value="Catatan / Evaluasi Lapangan" />
+                                <x-text-input name="catatan_observasi" type="text" value="{{ $obs->catatan ?? '' }}" class="mt-1 block w-full" placeholder="Masukkan catatan temuan..." />
+                            </div>
+                            <div class="md:col-span-2">
+                                <x-primary-button>Simpan Hasil Observasi</x-primary-button>
+                            </div>
+                        </form>
+                    </div>
+                    @empty
+                    <div class="text-center text-gray-500 py-4">Belum ada siswa bimbingan.</div>
+                    @endforelse
                 </div>
             </div>
 
