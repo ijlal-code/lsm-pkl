@@ -1,89 +1,48 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kelola Data Industri & Instruktur') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header"><h2 class="font-semibold text-lg text-gray-800 leading-tight">Data Industri & Instruktur</h2></x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Mitra Industri & Instruktur</h3>
-                    
-                    <form method="POST" action="{{ route('admin.instruktur.store') }}" class="space-y-4">
+    <div class="py-6 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <a href="{{ route('admin.dashboard') }}" class="text-sm text-gray-500 hover:text-gray-800">&larr; Dashboard</a>
+            @if(session('success')) <div class="bg-green-100 text-green-700 p-2 rounded text-sm">{{ session('success') }}</div> @endif
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Kelola Perusahaan -->
+                <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                    <h3 class="text-lg font-bold mb-4 text-orange-600 border-b pb-2">1. Daftar Tempat PKL (DUDI)</h3>
+                    <form action="{{ route('admin.perusahaan.store') }}" method="POST" class="flex gap-2 mb-4">
                         @csrf
-                        <div>
-                            <x-input-label for="nama_perusahaan" value="Nama Perusahaan / Dunia Kerja" />
-                            <x-text-input id="nama_perusahaan" name="nama_perusahaan" type="text" class="mt-1 block w-full" placeholder="Contoh: PT. Majene Media Kreatif" required />
-                        </div>
-
-                        <div>
-                            <x-input-label for="alamat_perusahaan" value="Alamat Perusahaan" />
-                            <textarea id="alamat_perusahaan" name="alamat_perusahaan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="2"></textarea>
-                        </div>
-
-                        <hr class="my-4 border-gray-200">
-                        <h4 class="text-sm font-semibold text-gray-700">Akun Instruktur Lapangan</h4>
-
-                        <div>
-                            <x-input-label for="name" value="Nama Lengkap Instruktur" />
-                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required />
-                        </div>
-
-                        <div>
-                            <x-input-label for="email" value="Email Instruktur" />
-                            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" required />
-                        </div>
-
-                        <div>
-                            <x-input-label for="password" value="Password" />
-                            <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" />
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Daftarkan Hubungan Kerja') }}</x-primary-button>
-                        </div>
+                        <input type="text" name="nama_perusahaan" placeholder="Nama Perusahaan..." class="border-gray-300 rounded text-sm w-full" required>
+                        <button type="submit" class="bg-orange-500 text-white font-bold py-2 px-3 rounded text-sm">+</button>
                     </form>
+                    <div class="overflow-x-auto border border-gray-100 rounded-lg max-h-64 overflow-y-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap"><thead class="bg-gray-50 text-xs text-gray-600 sticky top-0"><tr><th class="p-2">Nama DUDI</th><th class="p-2 text-right">Aksi</th></tr></thead><tbody class="divide-y divide-gray-100">
+                            @foreach($perusahaans as $p)
+                            <tr><td class="p-2 font-bold">{{ $p->nama_perusahaan }}</td><td class="p-2 text-right"><form action="{{ route('admin.perusahaan.destroy', $p->id) }}" method="POST">@csrf @method('DELETE')<button class="text-red-500 text-xs hover:underline">Hapus</button></form></td></tr>
+                            @endforeach
+                        </tbody></table>
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Mitra Perusahaan & Instruktur Terdaftar</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Instruktur</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($instrukturs as $instruktur)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $instruktur->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $instruktur->email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ $instruktur->perusahaan->nama_perusahaan ?? 'Perusahaan belum ditautkan' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                    <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                    <form action="{{ route('admin.instruktur.destroy', $instruktur->id) }}" method="POST" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Hapus data instruktur ini?')">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada mitra industri terdaftar.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <!-- Kelola Akun Instruktur -->
+                <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                    <h3 class="text-lg font-bold mb-4 text-purple-600 border-b pb-2">2. Akun Instruktur Pembimbing</h3>
+                    <form action="{{ route('admin.instruktur.store') }}" method="POST" class="flex gap-2 mb-4">
+                        @csrf
+                        <input type="text" name="name" placeholder="Nama" class="border-gray-300 rounded text-sm w-full" required>
+                        <input type="email" name="email" placeholder="Email" class="border-gray-300 rounded text-sm w-full" required>
+                        <button type="submit" class="bg-purple-600 text-white font-bold py-2 px-3 rounded text-sm">+</button>
+                    </form>
+                    <div class="overflow-x-auto border border-gray-100 rounded-lg max-h-64 overflow-y-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap"><thead class="bg-gray-50 text-xs text-gray-600 sticky top-0"><tr><th class="p-2">Nama Instruktur</th><th class="p-2 text-right">Aksi</th></tr></thead><tbody class="divide-y divide-gray-100">
+                            @foreach($instrukturs as $i)
+                            <tr><td class="p-2 font-bold">{{ $i->name }}<br><span class="text-xs font-normal text-gray-500">{{ $i->email }}</span></td><td class="p-2 text-right"><form action="{{ route('admin.instruktur.destroy', $i->id) }}" method="POST">@csrf @method('DELETE')<button class="text-red-500 text-xs hover:underline">Hapus</button></form></td></tr>
+                            @endforeach
+                        </tbody></table>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

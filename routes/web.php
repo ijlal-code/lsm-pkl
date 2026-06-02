@@ -42,21 +42,33 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cetak/jurnal/{siswa_id}', [CetakPdfController::class, 'cetakJurnal'])->name('cetak.jurnal');
     Route::get('/cetak/nilai/{siswa_id}', [CetakPdfController::class, 'cetakNilai'])->name('cetak.nilai');
 
-    // ==========================================
-    // 1. ADMIN
+  // ==========================================
+    // 1. ADMIN (SEKOLAH / KOORDINATOR)
     // ==========================================
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', function () {
-            // Ambil data statistik untuk Admin
-            $jumlahSiswa = User::where('role', 'siswa_pkl')->count();
-            $jumlahGuru = User::where('role', 'guru_pembimbing')->count();
-            $jumlahInstruktur = User::where('role', 'instruktur_industri')->count();
-            $jumlahPerusahaan = Perusahaan::count();
-            return view('admin.dashboard', compact('jumlahSiswa', 'jumlahGuru', 'jumlahInstruktur', 'jumlahPerusahaan'));
-        })->name('dashboard');
-
-        Route::get('/siswa', [AdminController::class, 'indexSiswa'])->name('siswa.index');
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        
+        // Kelola Siswa
+        Route::get('/siswa', [AdminController::class, 'siswaIndex'])->name('siswa.index');
+        Route::post('/siswa', [AdminController::class, 'siswaStore'])->name('siswa.store');
         Route::put('/siswa/mapping/{id}', [AdminController::class, 'updateMapping'])->name('siswa.mapping');
+        Route::delete('/siswa/{id}', [AdminController::class, 'siswaDestroy'])->name('siswa.destroy');
+        
+        // Kelola Guru
+        Route::get('/guru', [AdminController::class, 'guruIndex'])->name('guru.index');
+        Route::post('/guru', [AdminController::class, 'guruStore'])->name('guru.store');
+        Route::delete('/guru/{id}', [AdminController::class, 'guruDestroy'])->name('guru.destroy');
+        
+        // Kelola Instruktur & Perusahaan
+        Route::get('/instruktur', [AdminController::class, 'instrukturIndex'])->name('instruktur.index');
+        Route::post('/instruktur', [AdminController::class, 'instrukturStore'])->name('instruktur.store');
+        Route::delete('/instruktur/{id}', [AdminController::class, 'instrukturDestroy'])->name('instruktur.destroy');
+        Route::post('/perusahaan', [AdminController::class, 'perusahaanStore'])->name('perusahaan.store');
+        Route::delete('/perusahaan/{id}', [AdminController::class, 'perusahaanDestroy'])->name('perusahaan.destroy');
+        
+        // Pengaturan Sistem
+        Route::get('/pengaturan', [AdminController::class, 'pengaturanIndex'])->name('pengaturan.index');
+        Route::post('/pengaturan', [AdminController::class, 'pengaturanStore'])->name('pengaturan.store');
     });
 
     // ==========================================
