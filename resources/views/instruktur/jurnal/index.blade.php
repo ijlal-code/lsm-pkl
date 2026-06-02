@@ -38,7 +38,7 @@
                                 @if($jurnal->status_persetujuan === 'Disetujui')
                                     <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Disetujui</span>
                                 @else
-                                    <span class="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full">Menunggu</span>
+                                    <span class="px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full">pending</span>
                                 @endif
                             </td>
                             <td class="px-4 py-4 text-sm">

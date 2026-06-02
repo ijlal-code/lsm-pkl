@@ -21,54 +21,30 @@ class UserSeeder extends Seeder
             'name' => 'Admin HKI SMKN 1 Majene',
             'email' => 'admin@smkn1majene.sch.id',
             'password' => Hash::make('password123'),
-            'role' => 'admin',
+            'role' => 'admin', // SINKRON
         ]);
 
-        // 3. Buat 3 Akun Guru Pembimbing
-        $guru1 = User::create(['name' => 'Pak Budi (Guru)', 'email' => 'guru1@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru_pembimbing']);
-        $guru2 = User::create(['name' => 'Bu Siti (Guru)', 'email' => 'guru2@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru_pembimbing']);
-        $guru3 = User::create(['name' => 'Pak Andi (Guru)', 'email' => 'guru3@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru_pembimbing']);
+        // 3. Buat 3 Akun Guru
+        $guru1 = User::create(['name' => 'Pak Budi (Guru)', 'email' => 'guru1@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru']); // SINKRON
+        $guru2 = User::create(['name' => 'Bu Siti (Guru)', 'email' => 'guru2@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru']);
+        $guru3 = User::create(['name' => 'Pak Andi (Guru)', 'email' => 'guru3@smkn1majene.sch.id', 'password' => Hash::make('password123'), 'role' => 'guru']);
 
         // 4. Buat 3 Akun Instruktur Industri
-        $ins1 = User::create(['name' => 'Pak Anton (Semen Tonasa)', 'email' => 'anton@tonasa.com', 'password' => Hash::make('password123'), 'role' => 'instruktur_industri']);
-        $ins2 = User::create(['name' => 'Mbak Rina (Telkom)', 'email' => 'rina@telkom.co.id', 'password' => Hash::make('password123'), 'role' => 'instruktur_industri']);
-        $ins3 = User::create(['name' => 'Pak Joko (Kominfo)', 'email' => 'joko@kominfo.go.id', 'password' => Hash::make('password123'), 'role' => 'instruktur_industri']);
+        $ins1 = User::create(['name' => 'Pak Anton (Semen Tonasa)', 'email' => 'anton@tonasa.com', 'password' => Hash::make('password123'), 'role' => 'instruktur']); // SINKRON
+        $ins2 = User::create(['name' => 'Mbak Rina (Telkom)', 'email' => 'rina@telkom.co.id', 'password' => Hash::make('password123'), 'role' => 'instruktur']);
+        $ins3 = User::create(['name' => 'Pak Joko (Kominfo)', 'email' => 'joko@kominfo.go.id', 'password' => Hash::make('password123'), 'role' => 'instruktur']);
 
-        // 5. Buat 3 Akun Siswa (Langsung di-mapping ke Guru, Instruktur, dan Perusahaan)
+        // 5. Buat 3 Akun Siswa
         User::create([
             'name' => 'Siswa Ahmad',
             'email' => 'ahmad@siswa.com',
             'password' => Hash::make('password123'),
-            'role' => 'siswa_pkl',
+            'role' => 'siswa', // SINKRON
             'kelas' => 'XI TKJ 1',
             'jurusan' => 'Teknik Komputer dan Jaringan',
             'perusahaan_id' => $pt1->id,
             'instruktur_id' => $ins1->id,
             'guru_id' => $guru1->id,
-        ]);
-
-        User::create([
-            'name' => 'Siswa Nisa',
-            'email' => 'nisa@siswa.com',
-            'password' => Hash::make('password123'),
-            'role' => 'siswa_pkl',
-            'kelas' => 'XI RPL 2',
-            'jurusan' => 'Rekayasa Perangkat Lunak',
-            'perusahaan_id' => $pt2->id,
-            'instruktur_id' => $ins2->id,
-            'guru_id' => $guru2->id,
-        ]);
-
-        User::create([
-            'name' => 'Siswa Reza',
-            'email' => 'reza@siswa.com',
-            'password' => Hash::make('password123'),
-            'role' => 'siswa_pkl',
-            'kelas' => 'XI MM 1',
-            'jurusan' => 'Multimedia',
-            'perusahaan_id' => $pt3->id,
-            'instruktur_id' => $ins3->id,
-            'guru_id' => $guru3->id,
         ]);
     }
 }

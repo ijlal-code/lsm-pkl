@@ -35,7 +35,7 @@ class JurnalSiswaController extends Controller
     {
         // Validasi sesuai pedoman LMS PKL
         $request->validate([
-            'tanggal' => ['required', 'date'],
+            'hari_tanggal' => ['required', 'date'],
             'unit_kerja' => ['required', 'string', 'max:255'],
             'nama_pekerjaan' => ['required', 'string', 'max:255'],
             'perencanaan' => ['required', 'string'],
@@ -50,13 +50,13 @@ class JurnalSiswaController extends Controller
 
         Jurnal::create([
             'siswa_id' => Auth::id(),
-            'tanggal' => $request->tanggal,
+            'hari_tanggal' => $request->tanggal,
             'unit_kerja' => $request->unit_kerja,
             'nama_pekerjaan' => $request->nama_pekerjaan,
             'perencanaan' => $request->perencanaan,
             'pelaksanaan' => $request->pelaksanaan,
             'dokumentasi' => $path,
-            'status_persetujuan' => 'Menunggu', // Default status saat baru diinput
+            'status_persetujuan' => 'pending', // Default status saat baru diinput
         ]);
 
         return redirect()->route('siswa.jurnal.index')->with('success', 'Jurnal dan Catatan Kegiatan Harian berhasil dikirim!');

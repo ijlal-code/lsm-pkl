@@ -25,9 +25,9 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
     
     // Melempar user ke halaman dashboard spesifik mereka
     if ($role === 'admin') return redirect()->route('admin.dashboard');
-    if ($role === 'guru_pembimbing') return redirect()->route('guru.dashboard');
-    if ($role === 'siswa_pkl') return redirect()->route('siswa.dashboard');
-    if ($role === 'instruktur_industri') return redirect()->route('instruktur.dashboard');
+    if ($role === 'guru') return redirect()->route('guru.dashboard');
+    if ($role === 'siswa') return redirect()->route('siswa.dashboard');
+    if ($role === 'instruktur') return redirect()->route('instruktur.dashboard');
     
     return abort(403);
 })->name('dashboard');
@@ -72,7 +72,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
    // Group Rute Khusus Guru Pembimbing
-Route::middleware(['auth', 'role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
+Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
     
     // Dashboard Guru
     Route::get('/dashboard', [GuruController::class, 'dashboard'])->name('dashboard');
@@ -90,7 +90,7 @@ Route::middleware(['auth', 'role:guru_pembimbing'])->prefix('guru')->name('guru.
 });
 
    // Group Rute Khusus Siswa PKL
-Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
+Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
     
     // Dashboard Siswa
     Route::get('/dashboard', [JurnalSiswaController::class, 'dashboard'])->name('dashboard');
@@ -105,7 +105,7 @@ Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->
 });
 
     // Group Rute Khusus Instruktur Industri
-Route::middleware(['auth', 'role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
+Route::middleware(['auth', 'role:instruktur'])->prefix('instruktur')->name('instruktur.')->group(function () {
     
     // Dashboard Instruktur
     Route::get('/dashboard', [InstrukturController::class, 'dashboard'])->name('dashboard');

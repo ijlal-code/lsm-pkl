@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Menambahkan 4 role sesuai kebutuhan sistem [cite: 3, 8, 13, 18]
-            $table->enum('role', ['admin', 'guru_pembimbing', 'siswa_pkl', 'instruktur_industri'])
-                  ->default('siswa_pkl')
+            $table->enum('role', ['admin', 'guru', 'siswa', 'instruktur'])
+                  ->default('siswa')
                   ->after('password');
         });
     }

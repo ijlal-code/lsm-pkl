@@ -20,9 +20,9 @@ class InstrukturController extends Controller
                               ->pluck('id');
                               
         $totalSiswa = $siswaBimbingan->count();
-        $jurnalMenunggu = Jurnal::whereIn('siswa_id', $siswaBimbingan)->where('status_persetujuan', 'Menunggu')->count();
+        $jurnalpending = Jurnal::whereIn('siswa_id', $siswaBimbingan)->where('status_persetujuan', 'pending')->count();
 
-        return view('instruktur.dashboard', compact('totalSiswa', 'jurnalMenunggu'));
+        return view('instruktur.dashboard', compact('totalSiswa', 'jurnalpending'));
     }
 
     // ==========================================

@@ -16,8 +16,8 @@
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-center">
-                        <h3 class="text-lg font-bold text-gray-700">Jurnal Menunggu Persetujuan</h3>
-                        <p class="text-4xl font-bold mt-2 text-orange-600">{{ $jurnalMenunggu }}</p>
+                        <h3 class="text-lg font-bold text-gray-700">Jurnal pending Persetujuan</h3>
+                        <p class="text-4xl font-bold mt-2 text-orange-600">{{ $jurnalpending }}</p>
                     </div>
                 </div>
             </div>

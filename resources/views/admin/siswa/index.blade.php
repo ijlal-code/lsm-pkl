@@ -34,18 +34,24 @@
                         <x-input-label for="guru_id" value="Plotting Guru Pembimbing" />
                         <select id="guru_id" name="guru_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             <option value="">-- Pilih Guru --</option>
-                            @foreach($gurus as $guru)
+                            {{-- Menggunakan forelse agar tahu jika database guru kosong --}}
+                            @forelse($gurus as $guru)
                                 <option value="{{ $guru->id }}">{{ $guru->name }}</option>
-                            @endforeach
+                            @empty
+                                <option value="" disabled>⚠️ Data guru kosong, silakan tambah Guru terlebih dahulu!</option>
+                            @endforelse
                         </select>
                     </div>
                     <div class="md:col-span-2">
                         <x-input-label for="perusahaan_id" value="Plotting Tempat Industri / Perusahaan" />
                         <select id="perusahaan_id" name="perusahaan_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             <option value="">-- Pilih Perusahaan Mitra --</option>
-                            @foreach($perusahaans as $p)
+                            {{-- Menggunakan forelse agar tahu jika database perusahaan kosong --}}
+                            @forelse($perusahaans as $p)
                                 <option value="{{ $p->id }}">{{ $p->nama_perusahaan }}</option>
-                            @endforeach
+                            @empty
+                                <option value="" disabled>⚠️ Data perusahaan kosong, silakan tambah Industri terlebih dahulu!</option>
+                            @endforelse
                         </select>
                     </div>
                     <div class="md:col-span-2">

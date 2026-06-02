@@ -78,4 +78,47 @@
             </div>
         </div>
     </div>
+</x-app-layout><x-app-layout>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800">Kelola Instruktur & Industri</h2></x-slot>
+
+    <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">{{ session('success') }}</div>
+        @endif
+
+        <div class="p-6 bg-white shadow sm:rounded-lg">
+            <h3 class="text-lg font-medium mb-4">Tambah Industri & Instruktur</h3>
+            <form method="POST" action="{{ route('admin.instruktur.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @csrf
+                <div><x-input-label value="Nama Perusahaan" /><x-text-input name="nama_perusahaan" class="mt-1 block w-full" required /></div>
+                <div><x-input-label value="Alamat Perusahaan" /><x-text-input name="alamat" class="mt-1 block w-full" /></div>
+                <div><x-input-label value="Nama Akun Instruktur" /><x-text-input name="name" class="mt-1 block w-full" required /></div>
+                <div><x-input-label value="Email Instruktur" /><x-text-input name="email" type="email" class="mt-1 block w-full" required /></div>
+                <div><x-input-label value="Password Akun" /><x-text-input name="password" type="password" class="mt-1 block w-full" required /></div>
+                <div class="md:col-span-2"><x-primary-button>Simpan Data</x-primary-button></div>
+            </form>
+        </div>
+
+        <div class="p-6 bg-white shadow sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr><th>Nama Instruktur</th><th>Perusahaan</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                    @foreach($instrukturs as $ins)
+                    <tr class="text-center">
+                        <td class="py-2">{{ $ins->name }}</td>
+                        <td>{{ $ins->perusahaan->nama_perusahaan ?? '-' }}</td>
+                        <td>
+                            <form action="{{ route('admin.instruktur.destroy', $ins->id) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </x-app-layout>
