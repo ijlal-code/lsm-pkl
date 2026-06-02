@@ -60,10 +60,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ==========================================
     Route::middleware(['role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
         Route::get('/dashboard', function () {
-            return '<h1>Halaman Dashboard Siswa PKL</h1>';
+            // Untuk sementara dashboard kita arahkan saja langsung ke daftar jurnal
+            return redirect()->route('siswa.jurnal.index');
         })->name('dashboard');
 
-        // Tempat naruh Route siswa isi jurnal harian dan isi catatan
+        // Route untuk Jurnal Kegiatan Harian Siswa
+        Route::get('/jurnal', [JurnalSiswaController::class, 'index'])->name('jurnal.index');
+        Route::get('/jurnal/tambah', [JurnalSiswaController::class, 'create'])->name('jurnal.create');
+        Route::post('/jurnal', [JurnalSiswaController::class, 'store'])->name('jurnal.store');
+        Route::delete('/jurnal/{id}', [JurnalSiswaController::class, 'destroy'])->name('jurnal.destroy');
     });
 
     // ==========================================
