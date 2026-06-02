@@ -1,38 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Dashboard Instruktur Industri') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard Instruktur Industri') }}
+        </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-2xl font-bold mb-2">Selamat Datang, {{ Auth::user()->name }}!</h3>
-                <p class="text-gray-600 mb-6">Kelola absensi dan validasi kegiatan siswa bimbingan Anda.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-                        <p class="text-sm text-indigo-600 font-bold uppercase">Siswa Bimbingan Industri</p>
-                        <h4 class="text-4xl font-bold text-indigo-800">{{ $siswaBimbingan }}</h4>
-                    </div>
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <p class="text-sm text-yellow-600 font-bold uppercase">Jurnal Menunggu Validasi</p>
-                        <h4 class="text-4xl font-bold text-yellow-800">{{ $jurnalPending }}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-center">
+                        <h3 class="text-lg font-bold text-gray-700">Total Siswa Bimbingan Industri</h3>
+                        <p class="text-4xl font-bold mt-2 text-blue-600">{{ $totalSiswa }}</p>
                     </div>
                 </div>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-center">
+                        <h3 class="text-lg font-bold text-gray-700">Jurnal Menunggu Persetujuan</h3>
+                        <p class="text-4xl font-bold mt-2 text-orange-600">{{ $jurnalMenunggu }}</p>
+                    </div>
+                </div>
+            </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <a href="{{ route('instruktur.jurnal.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
-                        <h5 class="text-lg font-bold text-gray-900 mb-2">✅ Validasi Jurnal</h5>
-                        <p class="text-sm text-gray-600">Periksa, beri catatan, dan setujui jurnal harian siswa.</p>
-                    </a>
-                    <a href="{{ route('instruktur.absensi.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
-                        <h5 class="text-lg font-bold text-gray-900 mb-2">📅 Input Absensi</h5>
-                        <p class="text-sm text-gray-600">Kelola kehadiran harian (jam masuk/pulang) siswa.</p>
-                    </a>
-                    <a href="{{ route('instruktur.nilai.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
-                        <h5 class="text-lg font-bold text-gray-900 mb-2">⭐ Penilaian Akhir</h5>
-                        <p class="text-sm text-gray-600">Berikan rekapitulasi nilai kompetensi di akhir masa PKL.</p>
-                    </a>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h3 class="font-bold text-lg mb-4">Tugas Instruktur Harian</h3>
+                    <div class="flex space-x-4">
+                        <a href="{{ route('instruktur.jurnal.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">Validasi Jurnal Siswa</a>
+                        <a href="{{ route('instruktur.absensi.index') }}" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700">Isi Daftar Hadir</a>
+                    </div>
                 </div>
             </div>
         </div>

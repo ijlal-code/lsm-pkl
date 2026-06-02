@@ -2,62 +2,98 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Jurnal;
 use App\Models\User;
+use App\Models\Jurnal;
 use App\Models\Absensi;
-use App\Models\Nilai;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class InstrukturController extends Controller
 {
-    public function jurnalIndex() {
-        $siswaIds = User::where('instruktur_id', Auth::id())->pluck('id');
-        $jurnals = Jurnal::whereIn('siswa_id', $siswaIds)->orderBy('hari_tanggal', 'desc')->get();
+    public function dashboard()
+    {
+        $instruktur = Auth::user();
+        
+        // Menghitung jumlah siswa yang berada di perusahaan yang sama dengan instruktur
+        $siswaBimbingan = User::where('role', 'siswa')
+                              ->where('perusahaan_id', $instruktur->perusahaan_id)
+                              ->pluck('id');
+                              
+        $totalSiswa = $siswaBimbingan->count();
+        $jurnalMenunggu = Jurnal::whereIn('siswa_id', $siswaBimbingan)->where('status_persetujuan', 'Menunggu')->count();
+
+        return view('instruktur.dashboard', compact('totalSiswa', 'jurnalMenunggu'));
+    }
+
+    // ==========================================
+    // 1. MANAJEMEN JURNAL & PERSETUJUAN KEGIATAN
+    // ==========================================
+    public function jurnalIndex()
+    {
+        $instruktur = Auth::user();
+        
+        // Ambil data siswa di perusahaan instruktur
+        $siswaIds = User::where('role', 'siswa')->where('perusahaan_id', $instruktur->perusahaan_id)->pluck('id');
+        
+        // Ambil jurnal terbaru dari siswa-siswa tersebut
+        $jurnals = Jurnal::whereIn('siswa_id', $siswaIds)->with('siswa')->latest()->get();
+
         return view('instruktur.jurnal.index', compact('jurnals'));
     }
 
-    public function jurnalUpdate(Request $request, $id) {
-        $jurnal = Jurnal::findOrFail($id);
-        $jurnal->update([
-            'status_persetujuan' => $request->status_persetujuan,
-            'catatan_instruktur' => $request->catatan_instruktur,
-            'disetujui_oleh' => Auth::id()
+    public function jurnalSetujui(Request $request, $id)
+    {
+        $request->validate([
+            'catatan_instruktur' => 'nullable|string',
         ]);
-        return redirect()->back()->with('success', 'Status Jurnal diperbarui!');
+
+        $jurnal = Jurnal::findOrFail($id);
+        $jurnal->status_persetujuan = 'Disetujui';
+        $jurnal->catatan_instruktur = $request->catatan_instruktur;
+        $jurnal->save();
+
+        return redirect()->route('instruktur.jurnal.index')->with('success', 'Jurnal dan kegiatan siswa berhasil disetujui!');
     }
 
-    public function absensiIndex(Request $request) {
-        $tanggal = $request->tanggal ?? date('Y-m-d');
-        $siswas = User::where('role', 'siswa_pkl')->where('instruktur_id', Auth::id())->get();
-        $absensis = Absensi::where('instruktur_id', Auth::id())->where('tanggal', $tanggal)->get()->keyBy('siswa_id');
-        return view('instruktur.absensi.index', compact('siswas', 'tanggal', 'absensis'));
-    }
-
-    public function absensiStore(Request $request) {
-        foreach ($request->absensi as $siswa_id => $data) {
-            Absensi::updateOrCreate(
-                ['siswa_id' => $siswa_id, 'tanggal' => $request->tanggal],
-                ['instruktur_id' => Auth::id(), 'status' => $data['status'], 'jam_masuk' => $data['jam_masuk'], 'jam_pulang' => $data['jam_pulang']]
-            );
-        }
-        return redirect()->back()->with('success', 'Absensi disimpan!');
-    }
-
-    // MODUL BARU: PENILAIAN AKHIR PKL
-    public function nilaiIndex() {
-        $siswas = User::where('role', 'siswa_pkl')->where('instruktur_id', Auth::id())->get();
-        $nilais = Nilai::whereIn('siswa_id', $siswas->pluck('id'))->get()->keyBy('siswa_id');
-        return view('instruktur.nilai.index', compact('siswas', 'nilais'));
-    }
-
-    public function nilaiStore(Request $request) {
-        $request->validate(['siswa_id' => 'required|exists:users,id', 'soft_skills' => 'required|numeric|min:1|max:5', 'hard_skills' => 'required|numeric|min:1|max:5', 'pengembangan' => 'required|numeric|min:1|max:5', 'kewirausahaan' => 'required|numeric|min:1|max:5']);
+    // ==========================================
+    // 2. MENGISI DAFTAR HADIR / ABSENSI
+    // ==========================================
+    public function absensiIndex()
+    {
+        $instruktur = Auth::user();
+        $siswas = User::where('role', 'siswa')->where('perusahaan_id', $instruktur->perusahaan_id)->get();
         
-        Nilai::updateOrCreate(
-            ['siswa_id' => $request->siswa_id, 'instruktur_id' => Auth::id()],
-            $request->only(['soft_skills', 'hard_skills', 'pengembangan', 'kewirausahaan', 'catatan_tambahan'])
-        );
-        return redirect()->back()->with('success', 'Nilai PKL berhasil disimpan!');
+        // Riwayat absensi terbaru
+        $siswaIds = $siswas->pluck('id');
+        $riwayatAbsensi = Absensi::whereIn('siswa_id', $siswaIds)->with('siswa')->latest()->limit(50)->get();
+
+        return view('instruktur.absensi.index', compact('siswas', 'riwayatAbsensi'));
+    }
+
+    public function absensiStore(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:users,id',
+            'tanggal' => 'required|date',
+            'jam_masuk' => 'required|date_format:H:i',
+            'jam_pulang' => 'nullable|date_format:H:i',
+            'status' => 'required|in:Hadir,Izin,Sakit,Alpha',
+        ]);
+
+        // Mencegah duplikasi absen di tanggal yang sama untuk siswa yang sama
+        $cekAbsen = Absensi::where('siswa_id', $request->siswa_id)->where('tanggal', $request->tanggal)->first();
+        if ($cekAbsen) {
+            return back()->withErrors(['tanggal' => 'Siswa ini sudah diabsen pada tanggal tersebut.']);
+        }
+
+        Absensi::create([
+            'siswa_id' => $request->siswa_id,
+            'tanggal' => $request->tanggal,
+            'jam_masuk' => $request->jam_masuk,
+            'jam_pulang' => $request->jam_pulang,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('instruktur.absensi.index')->with('success', 'Daftar hadir siswa berhasil disimpan!');
     }
 }

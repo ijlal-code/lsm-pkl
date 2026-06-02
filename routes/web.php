@@ -102,27 +102,25 @@ Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->
     Route::get('/absensi', [JurnalSiswaController::class, 'absensi'])->name('absensi.index');
 });
 
-    // ==========================================
-    // 4. INSTRUKTUR
-    // ==========================================
-    Route::middleware(['role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
-        Route::get('/dashboard', function () {
-            // Ambil data statistik untuk Instruktur
-            $siswaBimbingan = User::where('role', 'siswa_pkl')->where('instruktur_id', Auth::id())->count();
-            $siswaIds = User::where('instruktur_id', Auth::id())->pluck('id');
-            $jurnalPending = Jurnal::whereIn('siswa_id', $siswaIds)->where('status_persetujuan', 'pending')->count();
-            
-            return view('instruktur.dashboard', compact('siswaBimbingan', 'jurnalPending'));
-        })->name('dashboard');
+    // Group Rute Khusus Instruktur Industri
+Route::middleware(['auth', 'role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
+    
+    // Dashboard Instruktur
+    Route::get('/dashboard', [InstrukturController::class, 'dashboard'])->name('dashboard');
+    
+    // 1. Validasi & Persetujuan Jurnal Siswa
+    Route::get('/jurnal', [InstrukturController::class, 'jurnalIndex'])->name('jurnal.index');
+    Route::put('/jurnal/{id}/setujui', [InstrukturController::class, 'jurnalSetujui'])->name('jurnal.setujui');
+    
+    // 2. Mengisi & Mengelola Absensi / Daftar Hadir Siswa
+    Route::get('/absensi', [InstrukturController::class, 'absensiIndex'])->name('absensi.index');
+    Route::post('/absensi', [InstrukturController::class, 'absensiStore'])->name('absensi.store');
+    
+    // 3. Menilai Siswa (Tambahan sesuai alur LMS PKL, jika diperlukan aksesnya via menu persetujuan kegiatan)
+    Route::get('/nilai', [InstrukturController::class, 'nilaiIndex'])->name('nilai.index');
+    Route::post('/nilai', [InstrukturController::class, 'nilaiStore'])->name('nilai.store');
+});
 
-        Route::get('/jurnal', [InstrukturController::class, 'jurnalIndex'])->name('jurnal.index');
-        Route::put('/jurnal/{id}/update', [InstrukturController::class, 'jurnalUpdate'])->name('jurnal.update');
-        Route::get('/absensi', [InstrukturController::class, 'absensiIndex'])->name('absensi.index');
-        Route::post('/absensi', [InstrukturController::class, 'absensiStore'])->name('absensi.store');
-        
-        Route::get('/nilai', [InstrukturController::class, 'nilaiIndex'])->name('nilai.index');
-        Route::post('/nilai', [InstrukturController::class, 'nilaiStore'])->name('nilai.store');
-    });
 });
 
 require __DIR__.'/auth.php';
