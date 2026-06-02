@@ -29,13 +29,21 @@ class CetakPdfController extends Controller
     }
 
     // 2. Cetak Daftar Nilai (Sesuai format image_8cca61.png)
-    public function cetakNilai($siswa_id)
+   public function cetakNilai($siswa_id)
     {
         $siswa = User::findOrFail($siswa_id);
         $pengaturan = $this->getPengaturan();
-        // Asumsi ada tabel Nilai, data absensi dll.
+        $nilai = \App\Models\Nilai::where('siswa_id', $siswa_id)->first(); // Ambil Nilai Asli
         
-        $pdf = Pdf::loadView('pdf.nilai', compact('siswa', 'pengaturan'))
+        // Menghitung absensi
+        $absen = \App\Models\Absensi::where('siswa_id', $siswa_id)->get();
+        $rekap_absen = [
+            'Sakit' => $absen->where('status', 'Sakit')->count(),
+            'Izin' => $absen->where('status', 'Izin')->count(),
+            'Alpha' => $absen->where('status', 'Alpha')->count(),
+        ];
+
+        $pdf = Pdf::loadView('pdf.nilai', compact('siswa', 'pengaturan', 'nilai', 'rekap_absen'))
                   ->setPaper('a4', 'portrait');
         return $pdf->stream('Nilai_PKL_'.$siswa->name.'.pdf');
     }

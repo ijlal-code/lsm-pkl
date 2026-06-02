@@ -31,28 +31,20 @@
     </table>
 
     <table class="nilai">
-        <thead>
-            <tr>
-                <th width="60%">Tujuan Pembelajaran</th>
-                <th width="10%">Skor</th>
-                <th width="30%">Deskripsi</th>
-            </tr>
-        </thead>
+        <thead><tr><th width="60%">Tujuan Pembelajaran</th><th width="10%">Skor (1-5)</th><th width="30%">Deskripsi</th></tr></thead>
         <tbody>
-            <tr><td>1. Internalisasi dan Penerapan Soft Skills</td><td></td><td></td></tr>
-            <tr><td>2. Penerapan Hard Skills</td><td></td><td></td></tr>
-            <tr><td>3. Peningkatan & Pengembangan Hard Skills</td><td></td><td></td></tr>
-            <tr><td>4. Penyiapan kemandirian kewirausahaan</td><td></td><td></td></tr>
+            <tr><td>1. Internalisasi dan Penerapan Soft Skills</td><td align="center">{{ $nilai->soft_skills ?? '-' }}</td><td></td></tr>
+            <tr><td>2. Penerapan Hard Skills</td><td align="center">{{ $nilai->hard_skills ?? '-' }}</td><td></td></tr>
+            <tr><td>3. Peningkatan & Pengembangan Hard Skills</td><td align="center">{{ $nilai->pengembangan ?? '-' }}</td><td></td></tr>
+            <tr><td>4. Penyiapan kemandirian kewirausahaan</td><td align="center">{{ $nilai->kewirausahaan ?? '-' }}</td><td></td></tr>
         </tbody>
     </table>
-
     <br>
-
     <table class="absen" style="width: 50%;">
         <tr><th colspan="2" style="text-align: left;">Kehadiran :</th></tr>
-        <tr><td width="30%">Sakit</td><td>: .................... Hari</td></tr>
-        <tr><td>Ijin</td><td>: .................... Hari</td></tr>
-        <tr><td>Tanpa Keterangan</td><td>: .................... Hari</td></tr>
+        <tr><td width="30%">Sakit</td><td>: {{ $rekap_absen['Sakit'] ?? 0 }} Hari</td></tr>
+        <tr><td>Ijin</td><td>: {{ $rekap_absen['Izin'] ?? 0 }} Hari</td></tr>
+        <tr><td>Alpha</td><td>: {{ $rekap_absen['Alpha'] ?? 0 }} Hari</td></tr>
     </table>
 
     <table class="signature">
