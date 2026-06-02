@@ -71,4 +71,29 @@ class CetakPdfController extends Controller
 
         return $pdf->stream('Catatan_Kegiatan_PKL_'.$user->name.'.pdf');
     }
+
+public function cetakObservasi()
+    {
+        $user = auth()->user();
+        
+        $observasi = \App\Models\Observasi::where('user_id', $user->id)
+                    ->orderBy('hari_tanggal', 'asc')
+                    ->get();
+                    
+        $data = [
+            'nama_siswa' => $user->name,
+            'kelas' => $user->kelas ?? 'Belum Diatur',
+            'dunia_kerja' => $user->perusahaan->nama ?? 'Belum Diatur', 
+            'nama_instruktur' => $user->instruktur->name ?? 'Belum Diatur', 
+            'nama_guru' => $user->guru->name ?? 'Belum Diatur', 
+            'pekerjaan_projek' => $observasi->first()->pekerjaan_projek ?? '-',
+            'observasi' => $observasi
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.observasi', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Lembar_Observasi_PKL_'.$user->name.'.pdf');
+    }
+
 }

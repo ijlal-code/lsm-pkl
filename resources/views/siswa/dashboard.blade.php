@@ -34,6 +34,10 @@
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Catatan Kegiatan</h5>
     <p class="font-normal text-gray-700">Isi refleksi, perencanaan, dan pelaksanaan kegiatan harian.</p>
 </a>
+<a href="{{ route('siswa.observasi.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Lembar Observasi PKL</h5>
+    <p class="font-normal text-gray-700">Lihat hasil observasi dan monitoring dari Guru Pembimbing.</p>
+</a>
                 </div>
             </div>
         </div>

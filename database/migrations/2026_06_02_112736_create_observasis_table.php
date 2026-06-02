@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('observasis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('users')->onDelete('cascade');
-            $table->date('tanggal');
-            $table->text('permasalahan');
-            $table->text('solusi');
-            $table->text('catatan_instruktur')->nullable();
-            $table->enum('status_persetujuan', ['pending', 'disetujui', 'revisi'])->default('pending');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Siswa yang diobservasi
+            $table->foreignId('guru_id')->constrained('users')->onDelete('cascade'); // Guru pembimbing
+            $table->date('hari_tanggal'); // Hari / tanggal monitoring
+            $table->string('pekerjaan_projek')->nullable(); // Ditambahkan untuk header PDF
+            $table->text('permasalahan'); // Permasalahan
+            $table->text('solusi'); // Solusi pemecahan masalah
+            $table->boolean('is_approved')->default(false); // Persetujuan Instruktur Industri
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('observasis');
     }

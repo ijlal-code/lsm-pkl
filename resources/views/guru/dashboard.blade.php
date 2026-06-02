@@ -24,6 +24,10 @@
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Catatan Kegiatan Siswa</h5>
     <p class="font-normal text-gray-700">Pantau refleksi dan catatan kegiatan yang ditulis oleh siswa bimbingan.</p>
 </a>
+<a href="{{ route('guru.observasi.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Lembar Observasi</h5>
+    <p class="font-normal text-gray-700">Monitor perkembangan siswa, catat permasalahan, dan berikan solusi pemecahan masalah.</p>
+</a>
                 </div>
             </div>
         </div>

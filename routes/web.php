@@ -125,7 +125,7 @@ Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->
 });
 
 // Rute untuk Guru Pembimbing (Hanya Lihat)
-Route::middleware(['auth', 'role:guru_pembingbing'])->prefix('guru')->name('guru.')->group(function () {
+Route::middleware(['auth', 'role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/catatan', [App\Http\Controllers\CatatanGuruController::class, 'index'])->name('catatan.index');
 });
 
@@ -134,6 +134,24 @@ Route::middleware(['auth', 'role:instruktur_industri'])->prefix('instruktur')->n
     Route::get('/catatan', [App\Http\Controllers\CatatanInstrukturController::class, 'index'])->name('catatan.index');
     Route::put('/catatan/{id}/approve', [App\Http\Controllers\CatatanInstrukturController::class, 'approve'])->name('catatan.approve');
 });
+
+// Rute untuk Guru (Isi Form)
+Route::middleware(['auth', 'role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
+    Route::resource('observasi', App\Http\Controllers\ObservasiGuruController::class)->except(['show']);
+});
+
+// Rute untuk Siswa (Lihat & Cetak PDF)
+Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
+    Route::get('/observasi', [App\Http\Controllers\ObservasiSiswaController::class, 'index'])->name('observasi.index');
+    Route::get('/cetak-observasi', [App\Http\Controllers\CetakPdfController::class, 'cetakObservasi'])->name('cetak.observasi');
+});
+
+// Rute untuk Instruktur (Persetujuan)
+Route::middleware(['auth', 'role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
+    Route::get('/observasi', [App\Http\Controllers\ObservasiInstrukturController::class, 'index'])->name('observasi.index');
+    Route::put('/observasi/{id}/approve', [App\Http\Controllers\ObservasiInstrukturController::class, 'approve'])->name('observasi.approve');
+});
+
 });
 
 require __DIR__.'/auth.php';
