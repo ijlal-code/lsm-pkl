@@ -1,83 +1,90 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kelola Pemetaan Siswa PKL') }}
+            {{ __('Mengelola Data Siswa PKL & Plotting Bimbingan') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                
-                @if(session('success'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="border-b p-3">Nama Siswa</th>
-                                <th class="border-b p-3">Kelas & Jurusan</th>
-                                <th class="border-b p-3">Penempatan (Industri, Instruktur, Guru)</th>
-                                <th class="border-b p-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($siswas as $siswa)
-                            <tr class="border-b hover:bg-gray-50">
-                                <form action="{{ route('admin.siswa.mapping', $siswa->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    
-                                    <td class="p-3 font-semibold">{{ $siswa->name }}</td>
-                                    
-                                    <td class="p-3">
-                                        <input type="text" name="kelas" value="{{ $siswa->kelas }}" placeholder="Kelas (ex: XI)" class="border rounded p-1 w-full text-sm mb-1">
-                                        <input type="text" name="jurusan" value="{{ $siswa->jurusan }}" placeholder="Jurusan (ex: TKJ)" class="border rounded p-1 w-full text-sm">
-                                    </td>
-                                    
-                                    <td class="p-3">
-                                        <select name="perusahaan_id" class="border rounded p-1 w-full text-sm mb-1">
-                                            <option value="">-- Pilih Tempat Industri --</option>
-                                            @foreach($perusahaans as $p)
-                                                <option value="{{ $p->id }}" {{ $siswa->perusahaan_id == $p->id ? 'selected' : '' }}>{{ $p->nama_perusahaan }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <select name="instruktur_id" class="border rounded p-1 w-full text-sm mb-1">
-                                            <option value="">-- Pilih Instruktur Industri --</option>
-                                            @foreach($instrukturs as $inst)
-                                                <option value="{{ $inst->id }}" {{ $siswa->instruktur_id == $inst->id ? 'selected' : '' }}>{{ $inst->name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <select name="guru_id" class="border rounded p-1 w-full text-sm">
-                                            <option value="">-- Pilih Guru Pembimbing --</option>
-                                            @foreach($gurus as $guru)
-                                                <option value="{{ $guru->id }}" {{ $siswa->guru_id == $guru->id ? 'selected' : '' }}>{{ $guru->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    
-                                    <td class="p-3 text-center">
-                                        <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-4 rounded text-sm w-full mb-2">
-                                            Simpan Mapping
-                                        </button>
-                                        <a href="{{ route('cetak.jurnal', $siswa->id) }}" target="_blank" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded text-sm w-full inline-block">
-                                            Test Cetak PDF
-                                        </a>
-                                    </td>
-                                </form>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                    {{ session('success') }}
                 </div>
+            @endif
 
+            <div class="p-6 bg-white shadow sm:rounded-lg">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Registrasi & Penempatan Siswa Baru</h3>
+                <form method="POST" action="{{ route('admin.siswa.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @csrf
+                    <div>
+                        <x-input-label for="name" value="Nama Lengkap Siswa" />
+                        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required />
+                    </div>
+                    <div>
+                        <x-input-label for="email" value="Email Akun" />
+                        <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" required />
+                    </div>
+                    <div>
+                        <x-input-label for="password" value="Password Default Akun" />
+                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" required />
+                    </div>
+                    <div>
+                        <x-input-label for="guru_id" value="Plotting Guru Pembimbing" />
+                        <select id="guru_id" name="guru_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">-- Pilih Guru --</option>
+                            @foreach($gurus as $guru)
+                                <option value="{{ $guru->id }}">{{ $guru->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <x-input-label for="perusahaan_id" value="Plotting Tempat Industri / Perusahaan" />
+                        <select id="perusahaan_id" name="perusahaan_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">-- Pilih Perusahaan Mitra --</option>
+                            @foreach($perusahaans as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama_perusahaan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <x-primary-button>Simpan & Daftarkan Siswa</x-primary-button>
+                    </div>
+                </form>
             </div>
+
+            <div class="p-6 bg-white shadow sm:rounded-lg overflow-x-auto">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Daftar Aktif Monitoring Siswa</h3>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Guru Pembimbing</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tempat Industri</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        @foreach($siswas as $siswa)
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-gray-900">{{ $siswa->name }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ $siswa->email }}</td>
+                            <td class="px-4 py-3 text-sm text-blue-600 font-medium">{{ $siswa->guru->name ?? 'Belum Di-plotting' }}</td>
+                            <td class="px-4 py-3 text-sm text-orange-600 font-medium">{{ $siswa->perusahaan->nama_perusahaan ?? 'Belum Di-plotting' }}</td>
+                            <td class="px-4 py-3 text-sm space-x-2">
+                                <form action="{{ route('admin.siswa.destroy', $siswa->id) }}" method="POST" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:underline" onclick="return confirm('Hapus siswa ini?')">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 </x-app-layout>

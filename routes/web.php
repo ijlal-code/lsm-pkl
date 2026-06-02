@@ -42,22 +42,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cetak/jurnal/{siswa_id}', [CetakPdfController::class, 'cetakJurnal'])->name('cetak.jurnal');
     Route::get('/cetak/nilai/{siswa_id}', [CetakPdfController::class, 'cetakNilai'])->name('cetak.nilai');
 
-    // ==========================================
-    // 1. ADMIN
-    // ==========================================
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', function () {
-            // Ambil data statistik untuk Admin
-            $jumlahSiswa = User::where('role', 'siswa_pkl')->count();
-            $jumlahGuru = User::where('role', 'guru_pembimbing')->count();
-            $jumlahInstruktur = User::where('role', 'instruktur_industri')->count();
-            $jumlahPerusahaan = Perusahaan::count();
-            return view('admin.dashboard', compact('jumlahSiswa', 'jumlahGuru', 'jumlahInstruktur', 'jumlahPerusahaan'));
-        })->name('dashboard');
-
-        Route::get('/siswa', [AdminController::class, 'indexSiswa'])->name('siswa.index');
-        Route::put('/siswa/mapping/{id}', [AdminController::class, 'updateMapping'])->name('siswa.mapping');
-    });
+    // Group Rute Khusus Admin/Koordinator PKL dengan Middleware Proteksi Role
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard Utama Admin
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // 1. CRUD Mengelola Data Siswa PKL & Plotting
+    Route::get('/siswa', [AdminController::class, 'siswaIndex'])->name('siswa.index');
+    Route::post('/siswa', [AdminController::class, 'siswaStore'])->name('siswa.store');
+    Route::put('/siswa/{id}', [AdminController::class, 'siswaUpdate'])->name('siswa.update');
+    Route::delete('/siswa/{id}', [AdminController::class, 'siswaDestroy'])->name('siswa.destroy');
+    
+    // 2. CRUD Mengelola Data Guru Pembimbing
+    Route::get('/guru', [AdminController::class, 'guruIndex'])->name('guru.index');
+    Route::post('/guru', [AdminController::class, 'guruStore'])->name('guru.store');
+    Route::put('/guru/{id}', [AdminController::class, 'guruUpdate'])->name('guru.update');
+    Route::delete('/guru/{id}', [AdminController::class, 'guruDestroy'])->name('guru.destroy');
+    
+    // 3. CRUD Mengelola Data Industri & Instruktur
+    Route::get('/instruktur', [AdminController::class, 'instrukturIndex'])->name('instruktur.index');
+    Route::post('/instruktur', [AdminController::class, 'instrukturStore'])->name('instruktur.store');
+    Route::put('/instruktur/{id}', [AdminController::class, 'instrukturUpdate'])->name('instruktur.update');
+    Route::delete('/instruktur/{id}', [AdminController::class, 'instrukturDestroy'])->name('instruktur.destroy');
+    
+    // 4. Mengatur Periode Pelaksanaan & Informasi PKL
+    Route::get('/pengaturan', [AdminController::class, 'pengaturanIndex'])->name('pengaturan.index');
+    Route::put('/pengaturan', [AdminController::class, 'pengaturanUpdate'])->name('pengaturan.update');
+});
 
     // ==========================================
     // 2. GURU PEMBIMBING
