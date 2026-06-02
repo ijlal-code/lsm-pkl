@@ -88,7 +88,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 
    // Group Rute Khusus Siswa PKL
-Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+Route::middleware(['auth', 'role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
     
     // Dashboard Siswa
     Route::get('/dashboard', [JurnalSiswaController::class, 'dashboard'])->name('dashboard');
