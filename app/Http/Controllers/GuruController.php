@@ -17,6 +17,7 @@ class GuruController extends Controller
         $siswas = User::where('role', 'siswa_pkl')->where('guru_id', Auth::id())->get();
         return view('guru.siswa.index', compact('siswas'));
     }
+    
 
     // Menampilkan Jurnal dan Absensi dari satu siswa spesifik
     public function detailSiswa($id)
