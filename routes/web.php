@@ -59,6 +59,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Tempat naruh Route instruktur menyetujui jurnal dan isi absen [cite: 19, 20]
     });
 
+    Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // Route Cetak PDF (bisa diakses admin, guru, atau siswa yang bersangkutan)
+    Route::get('/cetak/jurnal/{siswa_id}', [CetakPdfController::class, 'cetakJurnal'])->name('cetak.jurnal');
+    Route::get('/cetak/nilai/{siswa_id}', [CetakPdfController::class, 'cetakNilai'])->name('cetak.nilai');
+    // Tambahkan route cetak_catatan dan cetak_observasi di sini...
+    
+});
+
 });
 
 require __DIR__.'/auth.php';
