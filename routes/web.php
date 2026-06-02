@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CetakPdfController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,58 +18,64 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // ==========================================
-    // 1. JALUR AKSES: ADMIN (SEKOLAH / KOORDINATOR) [cite: 3]
+    // ROUTE PROFIL BAWAAN BREEZE
+    // ==========================================
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ==========================================
+    // ROUTE CETAK PDF (Bisa diakses pengguna yang login)
+    // ==========================================
+    Route::get('/cetak/jurnal/{siswa_id}', [CetakPdfController::class, 'cetakJurnal'])->name('cetak.jurnal');
+    Route::get('/cetak/nilai/{siswa_id}', [CetakPdfController::class, 'cetakNilai'])->name('cetak.nilai');
+    // Tambahkan route cetak_catatan dan cetak_observasi di sini...
+
+    // ==========================================
+    // 1. JALUR AKSES: ADMIN (SEKOLAH / KOORDINATOR)
     // ==========================================
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', function () {
             return '<h1>Halaman Dashboard Admin SMKN 1 Majene</h1>';
         })->name('dashboard');
         
-        // Tempat naruh Route kelola data siswa, guru, industri, dll [cite: 4, 5, 6]
+        // Route untuk Kelola Master Data dan Mapping Siswa
+        Route::get('/siswa', [AdminController::class, 'indexSiswa'])->name('siswa.index');
+        Route::put('/siswa/mapping/{id}', [AdminController::class, 'updateMapping'])->name('siswa.mapping');
     });
 
     // ==========================================
-    // 2. JALUR AKSES: GURU PEMBIMBING PKL [cite: 8]
+    // 2. JALUR AKSES: GURU PEMBIMBING PKL
     // ==========================================
     Route::middleware(['role:guru_pembimbing'])->prefix('guru')->name('guru.')->group(function () {
         Route::get('/dashboard', function () {
             return '<h1>Halaman Dashboard Guru Pembimbing</h1>';
         })->name('dashboard');
 
-        // Tempat naruh Route monitoring jurnal dan input lembar observasi [cite: 9, 11]
+        // Tempat naruh Route monitoring jurnal dan input lembar observasi
     });
-    
 
     // ==========================================
-    // 3. JALUR AKSES: SISWA PKL [cite: 13]
+    // 3. JALUR AKSES: SISWA PKL
     // ==========================================
     Route::middleware(['role:siswa_pkl'])->prefix('siswa')->name('siswa.')->group(function () {
         Route::get('/dashboard', function () {
             return '<h1>Halaman Dashboard Siswa PKL</h1>';
         })->name('dashboard');
 
-        // Tempat naruh Route siswa isi jurnal harian dan isi catatan [cite: 14, 15]
+        // Tempat naruh Route siswa isi jurnal harian dan isi catatan
     });
 
     // ==========================================
-    // 4. JALUR AKSES: INSTRUKTUR INDUSTRI [cite: 18]
+    // 4. JALUR AKSES: INSTRUKTUR INDUSTRI
     // ==========================================
     Route::middleware(['role:instruktur_industri'])->prefix('instruktur')->name('instruktur.')->group(function () {
         Route::get('/dashboard', function () {
             return '<h1>Halaman Dashboard Instruktur Industri</h1>';
         })->name('dashboard');
 
-        // Tempat naruh Route instruktur menyetujui jurnal dan isi absen [cite: 19, 20]
+        // Tempat naruh Route instruktur menyetujui jurnal dan isi absen
     });
-
-    Route::middleware(['auth', 'verified'])->group(function () {
-    
-    // Route Cetak PDF (bisa diakses admin, guru, atau siswa yang bersangkutan)
-    Route::get('/cetak/jurnal/{siswa_id}', [CetakPdfController::class, 'cetakJurnal'])->name('cetak.jurnal');
-    Route::get('/cetak/nilai/{siswa_id}', [CetakPdfController::class, 'cetakNilai'])->name('cetak.nilai');
-    // Tambahkan route cetak_catatan dan cetak_observasi di sini...
-    
-});
 
 });
 
