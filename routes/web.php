@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Tempat naruh Route monitoring jurnal dan input lembar observasi [cite: 9, 11]
     });
+    
 
     // ==========================================
     // 3. JALUR AKSES: SISWA PKL [cite: 13]
