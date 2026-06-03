@@ -19,15 +19,6 @@ class Observasi extends Model
         'is_approved',
     ];
 
-    // Relasi ke Siswa
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    // Relasi ke Guru
-    public function guru()
-    {
-        return $this->belongsTo(User::class, 'guru_id');
-    }
+    public function user() { return $this->belongsTo(User::class, 'user_id'); }
+    public function guru() { return $this->belongsTo(User::class, 'guru_id'); }
 }

@@ -30,10 +30,7 @@
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Catatan</h5>
     <p class="font-normal text-gray-700">Berikan catatan instruktur dan persetujuan pada kegiatan siswa.</p>
 </a>
-<a href="{{ route('guru.observasi.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
-    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Lembar Observasi</h5>
-    <p class="font-normal text-gray-700">Monitor perkembangan siswa, catat permasalahan, dan berikan solusi pemecahan masalah.</p>
-</a>
+
 <a href="{{ route('instruktur.observasi.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Observasi</h5>
     <p class="font-normal text-gray-700">Tinjau dan setujui lembar observasi yang diajukan oleh guru pembimbing.</p>

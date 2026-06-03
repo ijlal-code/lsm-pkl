@@ -11,14 +11,15 @@ class ObservasiGuruController extends Controller
 {
     public function index()
     {
-        $observasi = Observasi::where('guru_id', Auth::id())->with('user')->latest()->get();
-        return view('guru.observasi.index', compact('observasi'));
+        // Mengubah nama variabel menjadi jamak ($observasis) agar konsisten dengan view
+        $observasis = Observasi::where('guru_id', Auth::id())->with('user')->latest()->get();
+        return view('guru.observasi.index', compact('observasis'));
     }
 
     public function create()
     {
-        // Ambil daftar siswa yang dibimbing oleh guru ini
-        $siswa = User::where('role', 'siswa')->where('guru_id', Auth::id())->get();
+        // Role siswa_pkl (sebelumnya tertulis 'siswa' yang membuat daftar menjadi kosong)
+        $siswa = User::where('role', 'siswa_pkl')->where('guru_id', Auth::id())->get();
         return view('guru.observasi.create', compact('siswa'));
     }
 
@@ -39,6 +40,7 @@ class ObservasiGuruController extends Controller
             'pekerjaan_projek' => $request->pekerjaan_projek,
             'permasalahan' => $request->permasalahan,
             'solusi' => $request->solusi,
+            'is_approved' => false,
         ]);
 
         return redirect()->route('guru.observasi.index')->with('success', 'Data observasi berhasil disimpan.');
