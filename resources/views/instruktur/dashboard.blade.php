@@ -21,27 +21,35 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <a href="{{ route('instruktur.jurnal.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
+                    <a href="{{ route('instruktur.jurnal.index') }}"
+                        class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
                         <h5 class="text-lg font-bold text-gray-900 mb-2">✅ Validasi Jurnal</h5>
                         <p class="text-sm text-gray-600">Periksa, beri catatan, dan setujui jurnal harian siswa.</p>
                     </a>
                     <!-- Card Persetujuan Catatan -->
-<a href="{{ route('instruktur.catatan.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
-    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Catatan</h5>
-    <p class="font-normal text-gray-700">Berikan catatan instruktur dan persetujuan pada kegiatan siswa.</p>
-</a>
+                    <a href="{{ route('instruktur.catatan.index') }}"
+                        class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Catatan</h5>
+                        <p class="font-normal text-gray-700">Berikan catatan instruktur dan persetujuan pada kegiatan
+                            siswa.</p>
+                    </a>
 
-<a href="{{ route('instruktur.observasi.index') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
-    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Observasi</h5>
-    <p class="font-normal text-gray-700">Tinjau dan setujui lembar observasi yang diajukan oleh guru pembimbing.</p>
-</a>
-                    <a href="{{ route('instruktur.absensi.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
+                    <a href="{{ route('instruktur.observasi.index') }}"
+                        class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Persetujuan Observasi</h5>
+                        <p class="font-normal text-gray-700">Tinjau dan setujui lembar observasi yang diajukan oleh guru
+                            pembimbing.</p>
+                    </a>
+                    <a href="{{ route('instruktur.absensi.index') }}"
+                        class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
                         <h5 class="text-lg font-bold text-gray-900 mb-2">📅 Input Absensi</h5>
                         <p class="text-sm text-gray-600">Kelola kehadiran harian (jam masuk/pulang) siswa.</p>
                     </a>
-                    <a href="{{ route('instruktur.nilai.index') }}" class="block p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition text-center">
-                        <h5 class="text-lg font-bold text-gray-900 mb-2">⭐ Penilaian Akhir</h5>
-                        <p class="text-sm text-gray-600">Berikan rekapitulasi nilai kompetensi di akhir masa PKL.</p>
+                    <a href="{{ route('instruktur.nilai.index') }}"
+                        class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 transition duration-200">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Lembar Penilaian PKL</h5>
+                        <p class="font-normal text-gray-700">Input nilai evaluasi kompetensi perkembangan hard-skill &
+                            soft-skill siswa bimbingan.</p>
                     </a>
                 </div>
             </div>

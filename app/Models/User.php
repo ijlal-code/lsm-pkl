@@ -63,4 +63,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'guru_id');
     }
+    /**
+     * Relasi ke model Nilai (Siswa memiliki 1 data nilai dari instruktur)
+     */
+    public function nilai()
+    {
+        return $this->hasOne(Nilai::class, 'user_id');
+    }
 }

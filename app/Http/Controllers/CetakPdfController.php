@@ -28,24 +28,29 @@ class CetakPdfController extends Controller
         return $pdf->stream('Jurnal_PKL_'.$siswa->name.'.pdf');
     }
 
-    // 2. Cetak Daftar Nilai (Sesuai format image_8cca61.png)
-   public function cetakNilai($siswa_id)
+    public function cetakNilai()
     {
-        $siswa = User::findOrFail($siswa_id);
-        $pengaturan = $this->getPengaturan();
-        $nilai = \App\Models\Nilai::where('siswa_id', $siswa_id)->first(); // Ambil Nilai Asli
+        $user = auth()->user();
         
-        // Menghitung absensi
-        $absen = \App\Models\Absensi::where('siswa_id', $siswa_id)->get();
-        $rekap_absen = [
-            'Sakit' => $absen->where('status', 'Sakit')->count(),
-            'Izin' => $absen->where('status', 'Izin')->count(),
-            'Alpha' => $absen->where('status', 'Alpha')->count(),
+        $nilai = \App\Models\Nilai::where('user_id', $user->id)->first();
+        
+        if (!$nilai) {
+            return redirect()->back()->with('error', 'Cetak gagal, instruktur industri belum menginputkan nilai Anda.');
+        }
+                    
+        $data = [
+            'nama_siswa' => $user->name,
+            'kelas' => $user->kelas ?? 'Belum Diatur',
+            'dunia_kerja' => $user->perusahaan->nama ?? 'Belum Diatur', 
+            'nama_instruktur' => $user->instruktur->name ?? 'Belum Diatur', 
+            'nama_guru' => $user->guru->name ?? 'Belum Diatur', 
+            'nilai' => $nilai
         ];
 
-        $pdf = Pdf::loadView('pdf.nilai', compact('siswa', 'pengaturan', 'nilai', 'rekap_absen'))
-                  ->setPaper('a4', 'portrait');
-        return $pdf->stream('Nilai_PKL_'.$siswa->name.'.pdf');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.nilai', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Lembar_Penilaian_PKL_'.$user->name.'.pdf');
     }
 
     public function cetakCatatan()
@@ -95,5 +100,7 @@ public function cetakObservasi()
 
         return $pdf->stream('Lembar_Observasi_PKL_'.$user->name.'.pdf');
     }
+
+    
 
 }

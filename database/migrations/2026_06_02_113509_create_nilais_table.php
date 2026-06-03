@@ -6,22 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('nilais', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('instruktur_id')->constrained('users')->onDelete('cascade');
-            $table->integer('soft_skills')->comment('Skala 1-5');
-            $table->integer('hard_skills')->comment('Skala 1-5');
-            $table->integer('pengembangan')->comment('Skala 1-5');
-            $table->integer('kewirausahaan')->comment('Skala 1-5');
-            $table->text('catatan_tambahan')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Siswa yang dinilai
+            $table->foreignId('instruktur_id')->constrained('users')->onDelete('cascade'); // Instruktur penilai
+            $table->integer('soft_skill'); // Skala 1-5
+            $table->integer('hard_skill'); // Skala 1-5
+            $table->integer('pengembangan_hard_skill'); // Skala 1-5
+            $table->integer('kewirausahaan'); // Skala 1-5
+            $table->decimal('rata_rata', 3, 2)->nullable(); // Nilai Akhir
+            $table->text('catatan_rekomendasi')->nullable(); // Evaluasi tambahan
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('nilais');
     }
